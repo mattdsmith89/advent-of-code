@@ -12,10 +12,15 @@ let splitLine = fun (line: string) ->
     (line.Split '\n')
     |> List.ofArray
 
+let folder head acc elem =
+    if head + elem = 2020 
+    then head * elem 
+    else acc
+
 let rec sumCheckMultiply list =
     match list with
     | head::tail ->
-        let result = Seq.fold (fun acc elem -> if head + elem = 2020 then head * elem else acc) 0 tail
+        let result = Seq.fold (folder head) 0 tail
         match result with
         | 0 -> sumCheckMultiply tail
         | _ -> result
