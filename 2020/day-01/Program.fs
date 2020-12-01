@@ -2,6 +2,8 @@
 
 open System.IO
 
+// Useful helpers
+
 let readLines (filePath:string) = seq {
     use sr = new StreamReader (filePath)
     while not sr.EndOfStream do
@@ -11,6 +13,8 @@ let readLines (filePath:string) = seq {
 let splitLine = fun (line: string) ->
     (line.Split '\n')
     |> List.ofArray
+
+// PART ONE
 
 let folder head acc elem =
     if head + elem = 2020
@@ -25,6 +29,8 @@ let rec sumCheckMultiply list =
         | (0, 0, 0) -> sumCheckMultiply tail
         | _ -> result
     | [] -> (0, 0, 0)
+
+// PART TWO
 
 let innerFolder2 mainHead outerElem acc elem =
     if mainHead + outerElem + elem = 2020
