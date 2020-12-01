@@ -13,6 +13,16 @@ module Helpers =
         (line.Split '\n')
         |> List.ofArray
 
+    let printPart1Result resultType values =
+        let (a, b, result) = values
+        printfn "Part 1 %s result: %i" resultType result
+        printfn "%i and %i" a b
+
+    let printPart2Result resultType values =
+        let (a, b, c, result) = values
+        printfn "Part 2 %s result: %i" resultType result
+        printfn "%i, %i and %i" a b c
+
 module PartOne =
     let folder head acc elem =
         if head + elem = 2020
@@ -48,7 +58,6 @@ module PartTwo =
             | _ -> result
         | [] -> (0, 0, 0, 0)
 
-
 [<EntryPoint>]
 let main argv =
     
@@ -62,16 +71,12 @@ let main argv =
         |> Seq.map int 
         |> List.ofSeq
 
-    let (testA, testB, testValue) = PartOne.sumCheckMultiply test 
-    let (realA, realB, realValue) = PartOne.sumCheckMultiply real
+    Helpers.printPart1Result "test" (PartOne.sumCheckMultiply test)
+    Helpers.printPart1Result "real" (PartOne.sumCheckMultiply real)
 
-    printfn "Part 1 Test Result is %i from %i and %i" testValue testA testB
-    printfn "Part 1 Real Result is %i from %i and %i" realValue realA realB
-
-    let (testA, testB, testC, testValue) = PartTwo.sumCheckMultiply test
-    let (realA, realB, realC, realValue) = PartTwo.sumCheckMultiply real
-
-    printfn "Part 2 Test Result is %i from %i, %i and %i" testValue testA testB testC
-    printfn "Part 2 Real Result is %i from %i, %i and %i" realValue realA realB realC
+    printfn ""
+    
+    Helpers.printPart2Result "test" (PartTwo.sumCheckMultiply test)
+    Helpers.printPart2Result "real" (PartTwo.sumCheckMultiply real)
 
     0 // return an integer exit code
