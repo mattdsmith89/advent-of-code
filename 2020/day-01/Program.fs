@@ -26,6 +26,26 @@ let rec sumCheckMultiply list =
         | _ -> result
     | [] -> (0, 0, 0)
 
+let innerFolder2 mainHead outerElem acc elem =
+    if mainHead + outerElem + elem = 2020
+    then (mainHead, outerElem, elem, mainHead * outerElem * elem)
+    else acc
+
+
+let outerFolder2 mainHead list acc elem =
+    match list with
+    | _::tail -> Seq.fold (innerFolder2 mainHead elem) acc tail
+    | [] -> (0, 0, 0, 0)
+
+let rec sumCheckMultiply2 list =
+    match list with
+    | head::tail ->
+        let result = Seq.fold (outerFolder2 head tail) (0, 0, 0, 0) tail
+        match result with
+        | (0, 0, 0, 0) -> sumCheckMultiply2 tail
+        | _ -> result
+    | [] -> (0, 0, 0, 0)
+
 let testInput = "1721
 979
 366
@@ -46,10 +66,18 @@ let realInput =
 let testResult = sumCheckMultiply parsedTest
 let realResult = sumCheckMultiply realInput
 
+let test2Result = sumCheckMultiply2 parsedTest
+let real2Result = sumCheckMultiply2 realInput
+
 [<EntryPoint>]
 let main argv =
     let (testA, testB, testValue) = testResult
     let (realA, realB, realValue) = realResult
     printfn "Part 1 Test Result is %i from %i and %i" testValue testA testB
     printfn "Part 1 Real Result is %i from %i and %i" realValue realA realB
+
+    let (testA, testB, testC, testValue) = test2Result
+    let (realA, realB, realC, realValue) = real2Result
+    printfn "Part 2 Test Result is %i from %i, %i and %i" testValue testA testB testC
+    printfn "Part 2 Real Result is %i from %i, %i and %i" realValue realA realB realC
     0 // return an integer exit code
