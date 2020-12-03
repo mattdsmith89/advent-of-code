@@ -22,7 +22,8 @@ module Solver =
 
     let countCollisions lines instruction  =
         let (right, down) = instruction
-        let (_, collisions) = Seq.fold (folder right down) (0, 0) lines
+        let folderWithInstruction = folder right down
+        let (_, collisions) = Seq.fold folderWithInstruction (0, 0) lines
         collisions
         |> int64
 
