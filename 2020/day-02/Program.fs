@@ -4,7 +4,7 @@ open System.IO
 open System.Text.RegularExpressions
 
 module Helpers =
-    let readLines (filePath:string) = seq {
+    let readLines (filePath: string) = seq {
         use sr = new StreamReader (filePath)
         while not sr.EndOfStream do
             yield sr.ReadLine ()
