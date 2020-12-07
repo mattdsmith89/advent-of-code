@@ -27,7 +27,7 @@ module Solver =
         let contents = parts.[1].Split(", ")
         let parsedContents =
             contents
-            |> Array.choose (fun x ->
+            |> Seq.choose (fun x ->
                 if x.StartsWith("no") then None
                 else match x with
                         | Regex @"([\d]*) ([\w]* [\w]*)" [ count; bag; ] -> 
@@ -35,38 +35,44 @@ module Solver =
                         | _ -> None)
         (containerId, parsedContents)
 
-    let getBagContainers (bagMap: Map<string,int>) (input: string seq) =
+    let getBagContents (bagMap: Map<string,int>) (input: string seq) =
         let containerMapperWithMap = containerMapper bagMap
         input
         |> Seq.map containerMapperWithMap
         |> Map
 
-    let rec holdsBag (allBags: Map<int, (int * int) []>) (bagToCheck: int) (currentBag: (int * int) []) =
-        let bags = currentBag |> Array.map snd
-        let checkNextBag elem =
-            let nextBag = allBags.[elem]
-            holdsBag allBags bagToCheck nextBag
-        if Array.contains bagToCheck bags then true
-        else Array.exists checkNextBag bags
+    let rec holdsBag (allBagsWithContents: Map<int, (int * int) seq>) bagToCheck (currentBag: (int * int) seq) =
+        let innerBags = currentBag |> Seq.map snd
+        let checkNextBag nextBagId =
+            let nextBag = allBagsWithContents.[nextBagId]
+            holdsBag allBagsWithContents bagToCheck nextBag
+        if Seq.contains bagToCheck innerBags then true
+        else Seq.exists checkNextBag innerBags
 
-    let rec countBags (allBags: Map<int, (int * int) []>) (bagId: int) =
-        let bag = allBags.[bagId]
-        Array.sumBy (fun (subBagCount, subBagId) -> subBagCount + subBagCount * (countBags allBags subBagId)) bag
+    let rec countBags (allBagsWithContents: Map<int, (int * int) seq>) bagId =
+        let bag = allBagsWithContents.[bagId]
+        let sumInner innerBag =
+            let subBagCount = innerBag |> fst
+            let subBagId = innerBag |> snd
+            let subBagInnerCount =
+                countBags allBagsWithContents subBagId
+            subBagCount + subBagCount * subBagInnerCount
+        Seq.sumBy sumInner bag
 
 [<EntryPoint>]
 let main argv =
     let rules = Helpers.readLines "input.txt"
 
     let bagMap = Solver.getBagMap rules
-    let allContainers = Solver.getBagContainers bagMap rules
+    let bagsWithContents = Solver.getBagContents bagMap rules
 
-    let holdsBag = Solver.holdsBag allContainers bagMap.["shiny gold"]
+    let holdsBag = Solver.holdsBag bagsWithContents bagMap.["shiny gold"]
     let canHoldCount =
-        allContainers |> Map.toSeq |> Seq.map snd |> Seq.filter holdsBag |> Seq.length
+        bagsWithContents |> Map.toSeq |> Seq.map snd |> Seq.filter holdsBag |> Seq.length
     printfn "%i bags can hold shiny gold" canHoldCount
 
     let holdsCount =
-        Solver.countBags allContainers bagMap.["shiny gold"]
+        Solver.countBags bagsWithContents bagMap.["shiny gold"]
     printfn "shiny gold must contain %i bags" holdsCount
 
     0

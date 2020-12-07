@@ -166,25 +166,12 @@ let main argv =
     let parsed = 
         input
         |> Solver.sortInput
-        |> List.map Solver.tryParse
+        |> List.choose Solver.tryParse
     
-    let parseable =
-        parsed
-        |> List.filter (fun passport ->
-            match passport with 
-            | Some _ -> true
-            | _ -> false)
-        |> List.length
-
+    let parseable = parsed |> List.length
     printfn "%i parseable passports" parseable
 
-    let valid =
-        parsed
-        |> List.filter (fun passport -> 
-            match passport with
-            | Some p -> Solver.validatePassport p
-            | _ -> false)
-
-    printfn "%i valid passports" (valid |> List.length)
+    let valid = parsed |> List.filter Solver.validatePassport |> List.length
+    printfn "%i valid passports" valid
 
     0 // return an integer exit code

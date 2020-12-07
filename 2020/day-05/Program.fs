@@ -32,17 +32,14 @@ module Solver =
         let colRange = [ 0 .. 7 ]
         let row = (parsePartitions rowPartitions rowRange).Head
         let col = (parsePartitions colPartitions colRange).Head
-        (row, col, row * 8 + col)
+        row * 8 + col
 
 [<EntryPoint>]
 let main argv =
     let input = Helpers.readLines "input.txt"
 
-    let seats =
-        input
-        |> Seq.map Solver.parseBoardingPass
+    let seatIds = input |> Seq.map Solver.parseBoardingPass
 
-    let seatIds = Seq.map (fun (_,_,id) -> id) seats
     let minSeat = Seq.min seatIds
     let maxSeat = Seq.max seatIds
     printfn "highest id: %i" maxSeat
