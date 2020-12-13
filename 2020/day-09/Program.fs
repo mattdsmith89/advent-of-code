@@ -29,7 +29,7 @@ module Solver =
                 | false -> rest.Head
         findWeaknessKeyLoop input
 
-    let findWeakness key (input: int64 list) =
+    let findWeakness =
         let rec tryGetSumRange key count (list: int64 list) =
             let values = list |> List.splitAt count |> fst
             match values |> List.sum with
@@ -48,7 +48,7 @@ module Solver =
                     let max = List.max x
                     min + max
 
-        findWeaknessLoop key input
+        findWeaknessLoop
             
 [<EntryPoint>]
 let main argv =
