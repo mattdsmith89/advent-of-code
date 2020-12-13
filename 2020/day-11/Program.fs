@@ -18,14 +18,14 @@ let countOccupiedNeighbors (grid: char list list) (x, y) =
 
 let countOccupiedInSight (grid: char list list) (x, y) =
     let directions = [(-1,-1); (-1,0); (-1,1); (0,-1); (0,1); (1,-1); (1,0); (1,1)]
-    let rec checkPosition (grid: char list list) (x, y) (e, n) =
-        let (x', y') = (x + e, y + n)
+    let rec checkPosition (grid: char list list) (x, y) (dx, dy) =
+        let (x', y') = (x + dx, y + dy)
         if not (x' >= 0 && x' < grid.[0].Length && y' >= 0 && y' < grid.Length) then 0
         else
             match grid.[y'].[x'] with
             | '#' -> 1
             | 'L' -> 0
-            | _ -> checkPosition grid (x', y') (e, n)
+            | _ -> checkPosition grid (x', y') (dx, dy)
     directions |> List.sumBy (checkPosition grid (x,y))
 
 let printGrid input =
